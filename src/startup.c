@@ -19,26 +19,28 @@
 #include <os/startup.h>
 #include <os/console.h>
 #include <os/sched.h>
- 
 #include <errno.h>
 #include <string.h>
-
 #include <stdio.h>
 #include <pthread.h>
-
 #ifdef ENABLE_PTE_TESTS
 #include <pte/test.h>
 #endif
 
 extern void startup_thread(void *p)
 {
-
 #ifdef ENABLE_PTE_TESTS
-	/* Example for running the PTE tests. Please note that
-	you need to enable the PTE test files commented out in
-	the makefile */
+	/* Example for running the pthread tests. Please note that these tests 
+	have been ported and adapted from PTE for experimentation purposes and
+	in order to run them, for now, you need to:
+	
+	Enable the commented out OBJS+= directive for lib/pte/tests/*.c in the
+	makefile, and define ENABLE_PTE_TESTS in os/config.h header file.
+	
+	Kindly note that these tests need to be revisited as long as work work
+	on the optimisation of the scheduler continues.
+	*/
 	pthread_t r;
 	pthread_create(&r, NULL, pte_test_main, NULL);
 #endif
-
 }
