@@ -1,0 +1,3 @@
+Stardust
+
+Stardust is a light-weight library operating system designed to run applications in a protected, single-address space environment. It provides a minimal kernel that manages the virtual hardware resources presented by an underlying hypervisor. Please read more at https://stardustos.github.io/
