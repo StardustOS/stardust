@@ -37,7 +37,7 @@ extern void startup_thread(void *p)
 	Enable the commented out OBJS+= directive for lib/pte/tests/*.c in the
 	makefile, and define ENABLE_PTE_TESTS in os/config.h header file.
 	
-	Kindly note that these tests need to be revisited as long as work work
+	Kindly note that these tests need to be revisited as long as the work
 	on the optimisation of the scheduler continues.
 	*/
 	pthread_t r;

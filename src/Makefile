@@ -14,10 +14,6 @@
 #  with this program; if not, write to the Free Software Foundation, Inc.,
 #  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-XEN_ROOT = $(realpath ../../xen)
-
-include $(XEN_ROOT)/Config.mk
-export XEN_ROOT
 XEN_INTERFACE_VERSION := 0x00030205
 export XEN_INTERFACE_VERSION
 
@@ -122,15 +118,12 @@ default: links archlib $(TARGET)
 
 .PHONY: links
 links:	$(ARCH_LINKS) 
-	[ -e include/public ] || ln -sf $(XEN_ROOT)/xen/include/public include/public
-
 
 archlib: $(ARCH_OBJS) 
 	$(AR) rv $(ARCH_LIB) $(ARCH_OBJS)
 
 $(TARGET): $(OBJS)
 	$(LD) -r $(LDFLAGS) arch/x86_64.o $(OBJS) -Larch $(ARCH_LIB) -o $@.o
-	$(OBJCOPY) -w -G _start -G str* -G mem* -G hypercall_page $@.o $@.o
 	$(LD) $(LDFLAGS) $(LDFLAGS_FINAL) $@.o -o $@
 	gzip -f -9 -c $@ >$@.gz
 
