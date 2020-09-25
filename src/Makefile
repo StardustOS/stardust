@@ -40,9 +40,7 @@ DEF_CFLAGS += -fno-stack-protector
 DEF_CFLAGS += -Wno-unused-but-set-variable
 DEF_CFLAGS += -Wno-unused-variable
 DEF_CFLAGS += -Wno-maybe-uninitialized
-DEF_CFLAGS += -O3
 DEF_CFLAGS += -mfpmath=sse
-DEF_CFLAGS += -fomit-frame-pointer
 DEF_CFLAGS += -Wno-int-conversion
 DEF_CFLAGS += -Wno-pointer-arith
 DEF_CFLAGS += -Wnested-externs -Wpointer-arith -Winline -Wno-parentheses -Wno-misleading-indentation
@@ -54,8 +52,13 @@ DEF_ASFLAGS = -D__ASSEMBLY__
 DEF_LDFLAGS = -no-stack-protector
 DEF_LDFLAGS += --allow-multiple-definition
 
-ifeq ($(debug),y)
+ifeq ($(debug), y)
 DEF_CFLAGS += -g
+DEF_CFLAGS += -fno-unroll-loops
+DEF_CFLAGS += -O0
+else
+DEF_CFLAGS += -fomit-frame-pointer
+DEF_CFLAGS += -O3
 endif
 
 CFLAGS := $(DEF_CFLAGS) $(ARCH_CFLAGS)
