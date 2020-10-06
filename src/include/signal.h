@@ -546,7 +546,6 @@ int sigprocmask(int how, const sigset_t *set, sigset_t *oldset) __THROW;
 
 int sigaction(int signum, const struct sigaction *act, struct sigaction *oldact) __THROW;
 
-// #include <sys/time.h>
 
 int sigqueueinfo(pid_t pid, int sig, siginfo_t *info) __THROW;
 int siginterrupt(int sig, int flag) __THROW;
@@ -557,7 +556,5 @@ int siginterrupt(int sig, int flag) __THROW;
 int sigwait(const sigset_t* set,int* sig) __THROW;
 
 extern const char *const* sys_siglist;
-
-// #include <sys/ucontext.h>
 
 #endif

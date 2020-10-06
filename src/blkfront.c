@@ -822,7 +822,7 @@ extern int blk_has_initialised(void)
   return blk_initialised;
 }
 
-static void blk_thread(void *p)
+static void blkfront_thread(void *p)
 {
   int num_devices;
   blk_init();
@@ -847,7 +847,7 @@ static void blk_thread(void *p)
 
 static int start_blk_front(void *arg)
 {
-  create_thread("blk_front_thread", blk_thread, UKERNEL_FLAG, arg);
+  create_thread("blkfront_thread", blkfront_thread, UKERNEL_FLAG, arg);
   return 0;
 }
 

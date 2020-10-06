@@ -14,6 +14,8 @@
 #  with this program; if not, write to the Free Software Foundation, Inc.,
 #  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+PACKAGES_ROOT = $(realpath ../../packages)
+
 XEN_INTERFACE_VERSION := 0x00030205
 export XEN_INTERFACE_VERSION
 
@@ -97,11 +99,14 @@ TARGET := stardust
 
 SUBDIRS := xenbus util atomic lib lib/asm
 SUBDIRS += lib/pte lib/pte/platform lib/pte/posix lib/pte/posix/extra lib/pte/tls lib/pte/tests
+# SUBDIRS += $(PACKAGES_ROOT)/fs
 
 ARCH_OBJS := $(patsubst %.c,%.o,$(wildcard arch/*.c))
 ARCH_OBJS += $(patsubst %.S,%.o,$(wildcard arch/*.S))
 
-OBJS := $(patsubst %.c,%.o,$(wildcard *.c))
+OBJS :=
+# OBJS += $(patsubst %.c,%.o,$(wildcard $(PACKAGES_ROOT)/fs/*.c))
+OBJS += $(patsubst %.c,%.o,$(wildcard *.c))
 OBJS += $(patsubst %.c,%.o,$(wildcard lib/*.c))
 OBJS += $(patsubst %.c,%.o,$(wildcard atomic/*.c))
 OBJS += $(patsubst %.c,%.o,$(wildcard xenbus/*.c))
@@ -110,6 +115,7 @@ OBJS += $(patsubst %.c,%.o,$(wildcard lib/pte/*.c))
 OBJS += $(patsubst %.c,%.o,$(wildcard lib/pte/posix/*.c))
 OBJS += $(patsubst %.c,%.o,$(wildcard lib/pte/posix/extra/*.c))
 OBJS += $(patsubst %.c,%.o,$(wildcard lib/pte/platform/*.c))
+OBJS += $(patsubst %.c,%.o,$(wildcard lib/*.c))
 # OBJS += $(patsubst %.c,%.o,$(wildcard lib/pte/tests/*.c))
 OBJS += $(patsubst %.S,%.o,$(wildcard lib/asm/*.S))
 
@@ -117,7 +123,8 @@ OBJS += $(patsubst %.S,%.o,$(wildcard lib/asm/*.S))
 default: links archlib $(TARGET) 
 
 .PHONY: links
-links:	$(ARCH_LINKS) 
+links:	$(ARCH_LINKS)
+	# [ -e include/fs ] || ln -sf $(PACKAGES_ROOT)/fs/include include/fs
 
 archlib: $(ARCH_OBJS) 
 	$(AR) rv $(ARCH_LIB) $(ARCH_OBJS)

@@ -34,7 +34,6 @@
 #include <os/types.h>
 #include <os/xmalloc.h>
 #include <ctype.h>
-// #include <wchar.h>
 
 #define DEFAULT_ALIGN (sizeof(unsigned long))
 

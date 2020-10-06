@@ -70,9 +70,7 @@ int setvbuf(FILE *restrict stream, char *restrict buf, int type, size_t size);
 /* This is used by the experimental, rudimentary file system ported to this
 environment (can be linked from the packages repository) */ 
 
-#ifdef ENABLE_FATFS
-
-#include <sys/stat.h>
+#ifdef ENABLE_FS
 
 #define SEEK_SET 0
 #define SEEK_CUR 1

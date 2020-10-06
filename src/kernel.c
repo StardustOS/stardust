@@ -40,12 +40,7 @@
 
 uint8_t xen_features[XENFEAT_NR_SUBMAPS * 32];
 
-__attribute__((weak)) int app_main(struct app_main_args *aargs){
-	create_thread("startup_thread", startup_thread, UKERNEL_FLAG, NULL);
-	return 0;
-}
-
-static void run_main(struct app_main_args *args)
+static void startup(struct app_main_args *args)
 {
 	app_main(args);
 }
@@ -118,6 +113,7 @@ void start_kernel(start_info_t *si)
 
 	aargs.cmd_line = (char *)si->cmd_line;
 	aargs.si_info = si;
-	run_main(&aargs);
+	printk("Stardust started.\n");
+	startup(&aargs);
 	run_idle_thread();
 }

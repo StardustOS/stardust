@@ -23,12 +23,44 @@
 #include <string.h>
 #include <stdio.h>
 #include <pthread.h>
+#include <assert.h>
+
+#ifdef ENABLE_FS
+#include <fs/osal.h>
+#include <fs/fs-tests.h>
+#endif
+
 #ifdef ENABLE_PTE_TESTS
 #include <pte/test.h>
 #endif
 
-extern void startup_thread(void *p)
+#ifdef ENABLE_PTE_TESTS
+void pte_tests_thread(void *p)
 {
+	pthread_t r;
+	pthread_create(&r, NULL, pte_test_main, NULL);
+}
+#endif
+
+#ifdef ENABLE_FS
+void fs_test_thread(void *p)
+{
+    if(init_disk())
+    {
+		int file_len;
+		fs_read_test(&file_len);
+	}
+}
+#endif
+
+__attribute__((weak)) int app_main(struct app_main_args *aargs)
+{
+
+/* This function can be overwritten to permit the kernel to be linked with
+an external application that defines the same function. Currently, in this
+function we provide a list of default tests.
+*/
+
 #ifdef ENABLE_PTE_TESTS
 	/* Example for running the pthread tests. Please note that these tests 
 	have been ported and adapted from PTE for experimentation purposes and
@@ -40,7 +72,11 @@ extern void startup_thread(void *p)
 	Kindly note that these tests need to be revisited as long as the work
 	on the optimisation of the scheduler continues.
 	*/
-	pthread_t r;
-	pthread_create(&r, NULL, pte_test_main, NULL);
+	create_thread("pte_tests_thread", pte_tests_thread, UKERNEL_FLAG, NULL);
 #endif
+
+#ifdef ENABLE_FS
+	create_thread("fs_test_thread", fs_test_thread, UKERNEL_FLAG, NULL);
+#endif 
+	return 0;
 }

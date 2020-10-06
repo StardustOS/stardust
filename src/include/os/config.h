@@ -30,6 +30,9 @@
 /* Enables support for POSIX threads */
 #define ENABLE_PTE
 
+/* Enables the experimental fs library */
+// #define ENABLE_FS
+
 /* Permits the kernel to compile with POSIX threads tests */
 // #define ENABLE_PTE_TESTS
 
