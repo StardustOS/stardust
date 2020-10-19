@@ -25,6 +25,7 @@ ARCH_CFLAGS += -ffixed-r14
 ARCH_ASFLAGS := -m64
 ARCH_LDFLAGS := -m elf_x86_64
 
+CC := gcc
 GCC_BASE=$(shell $(CC) -print-search-dirs | grep ^install | cut -f 2 -d ' ')
 GCC_INCLUDE:=-I${GCC_BASE}include
 GCC_INCLUDE+=-I${GCC_BASE}include-fixed
