@@ -101,12 +101,14 @@ TARGET := stardust
 SUBDIRS := xenbus util atomic lib lib/asm
 SUBDIRS += lib/pte lib/pte/platform lib/pte/posix lib/pte/posix/extra lib/pte/tls lib/pte/tests
 # SUBDIRS += $(PACKAGES_ROOT)/fs
+# SUBDIRS += $(PACKAGES_ROOT)/fdlibm
 
 ARCH_OBJS := $(patsubst %.c,%.o,$(wildcard arch/*.c))
 ARCH_OBJS += $(patsubst %.S,%.o,$(wildcard arch/*.S))
 
 OBJS :=
 # OBJS += $(patsubst %.c,%.o,$(wildcard $(PACKAGES_ROOT)/fs/*.c))
+# OBJS += $(patsubst %.c,%.o,$(wildcard $(PACKAGES_ROOT)/fdlibm/*.c))
 OBJS += $(patsubst %.c,%.o,$(wildcard *.c))
 OBJS += $(patsubst %.c,%.o,$(wildcard lib/*.c))
 OBJS += $(patsubst %.c,%.o,$(wildcard atomic/*.c))
@@ -126,6 +128,7 @@ default: links archlib $(TARGET)
 .PHONY: links
 links:	$(ARCH_LINKS)
 	# [ -e include/fs ] || ln -sf $(PACKAGES_ROOT)/fs/include include/fs
+	# [ -e include/fdlibm ] || ln -sf $(PACKAGES_ROOT)/fdlibm/include include/fdlibm
 
 archlib: $(ARCH_OBJS) 
 	$(AR) rv $(ARCH_LIB) $(ARCH_OBJS)
