@@ -28,6 +28,8 @@ extern void xfree(const void *);
 extern void * xmalloc_align(size_t size, size_t align);
 extern void * xrealloc(const void *, size_t size, size_t align);
 void * xcalloc(size_t n, size_t size);
+extern void * xmalloc_at(const void *p, size_t size);
+extern void xfree_at(void *start, size_t length);
 
 static inline void * xmalloc_array_align(size_t size, size_t align, size_t num)
 {

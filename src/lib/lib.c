@@ -644,6 +644,15 @@ void free(void *ptr)
     xfree(ptr);
 }
 
+void * malloc_at(const void *p, size_t size)
+{
+    return xmalloc_at(p, size);
+}
+
+void free_at(void *start, size_t length) {
+    xfree_at(start, length);
+}
+
 unsigned long int strtoul(const char *ptr, char **endptr, int base)
 {
     int neg = 0, overflow = 0;

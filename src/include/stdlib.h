@@ -65,5 +65,7 @@ void qsort(void *base, size_t nmemb, size_t size, int (*compar)(const void *, co
 
 typedef void (*fun)(void);
 
+extern void * malloc_at(const void *p, size_t size);
+extern void free_at(void *start, size_t length);
 
 #endif

@@ -68,6 +68,28 @@ struct xmalloc_hdr
 	struct list_head freelist;
 };
 
+extern void *
+xmalloc_at(const void *p, size_t size)
+{
+	struct xmalloc_hdr *hdr;
+	int p_size;
+	BUG_ON(in_irq());
+	if (p == NULL) return xmalloc_align(size, sizeof(unsigned long));
+	hdr = (struct xmalloc_hdr *)p - 1;
+	p_size = hdr->size - sizeof(struct xmalloc_hdr);
+	if (p_size >= size) return (void *)p;
+	void *result = xmalloc_align(size, sizeof(unsigned long));
+	memcpy(result, p, p_size);
+	xfree(p);
+	return result;
+}
+
+extern void 
+xfree_at(void *start, size_t length)
+{
+    free_pages(start, get_order(length));
+}
+
 static void maybe_split(struct xmalloc_hdr *hdr, size_t size, size_t block)
 {
 	struct xmalloc_hdr *extra;
