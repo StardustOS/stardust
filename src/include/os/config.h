@@ -42,4 +42,6 @@
 /* Supports the standard maths library */
 // #define ENABLE_FDLIBM
 
+#define ENABLE_THREAD_CREATION_AT_DESIGNATED_ADDRESS
+
 #endif

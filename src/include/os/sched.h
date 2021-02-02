@@ -153,6 +153,8 @@ DEFINE_THREAD_FLAG(JOINING, is_, joining);
 #define switch_threads(prev, next, last) arch_switch_threads(prev, next, last)
 
 struct thread* arch_create_thread(char *name, void (*function)(void *), void *stack, unsigned long stack_size, void *data);
+struct thread* arch_create_thread_at(char *name, void (*function)(void *), void *stack, unsigned long stack_size, void *data, const void *addr_at);
+
 struct thread* arch_create_pthread(char *name, function function, void *stack, unsigned long stack_size, void *data);
 
 extern void init_sched(char *cmd_line);
@@ -160,7 +162,9 @@ extern void init_initial_context(void);
 extern void run_idle_thread(void);
 
 struct thread* create_thread(char *name, void (*function), int flags, void *data);
+struct thread* create_thread_at(char *name, void (*function), int flags, void *data, const void *addr_at);
 struct thread* create_thread_with_stack(char *name, void (*function)(void *), int ukernel, void *stack, unsigned long stack_size, void *data);
+struct thread* create_thread_with_stack_at(char *name, void (*function)(void *), int ukernel, void *stack, unsigned long stack_size, void *data, const void *addr_at);
 struct thread* create_idle_thread(unsigned int cpu);
 struct thread* create_vm_thread(char *name, void (*function)(void *), void *stack, unsigned long stack_size, int priority, void *data);
 

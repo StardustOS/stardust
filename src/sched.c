@@ -601,14 +601,75 @@ static struct thread* create_thread_with_id_stack(char *name, void (*function)(v
 	return thread;
 }
 
+static struct thread* create_thread_with_id_stack_at(char *name, void (*function)(void *), int flags, void *stack, unsigned long stack_size, void *data, uint16_t id, const void *addr_at)
+{
+
+	struct thread *thread;
+
+	thread = arch_create_thread_at(name, function, stack, stack_size, data, addr_at);
+
+	if (thread == NULL) 
+	{
+		return NULL;
+	}
+	
+	thread->flags = flags;
+	thread->regs = NULL;
+	thread->fpregs = (struct fp_regs *)alloc_page();
+	
+	if (thread->fpregs == (struct fp_regs *) 0) 
+	{
+		return NULL;
+	}
+	
+	thread->fpregs->mxcsr = MXCSRINIT;
+
+	if (stack == NULL ) 
+	{
+		thread->cpu = -1;
+	}
+
+	thread->preempt_count = 0;
+	thread->resched_running_time = 0;
+	thread->cum_running_time = 0;
+	thread->timeslice = timeslice;
+	thread->lock_count = 0;
+	thread->appsched_id = -1;
+	clear_running(thread);
+	INIT_LIST_HEAD(&thread->joiners);
+	INIT_LIST_HEAD(&thread->ready_list);
+	INIT_LIST_HEAD(&thread->thread_list);
+	INIT_LIST_HEAD(&thread->aux_thread_list);
+	thread->id = id;
+	sched_add_thread_list(thread);
+	BUG_ON(thread->id == 0);
+
+	if (thread->flags == UKERNEL_FLAG)
+	{
+		start_thread(thread);
+	}
+
+	return thread;
+}
+
 struct thread* create_thread_with_stack(char *name, void (*function)(void *), int flags, void *stack, unsigned long stack_size, void *data)
 {
 	return create_thread_with_id_stack(name, function, flags, stack, stack_size, data, thread_id++);
 }
 
+struct thread* create_thread_with_stack_at(char *name, void (*function)(void *), int flags, void *stack, unsigned long stack_size, void *data, const void *addr_at)
+{
+	return create_thread_with_id_stack_at(name, function, flags, stack, stack_size, data, thread_id++, addr_at);
+}
+
 struct thread* create_thread(char *name, void (*function), int flags, void *data)
 {
 	return create_thread_with_stack(name, function, flags, NULL, 0, data);
+}
+
+struct thread* create_thread_at(char *name, void (*function), int flags, void *data, const void *addr_at)
+{
+	return create_thread_with_stack_at(name, function, flags, NULL, 0, data, addr_at);
 }
 
 struct thread* create_idle_thread(unsigned int cpu)

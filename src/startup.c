@@ -53,6 +53,11 @@ void fs_test_thread(void *p)
 }
 #endif
 
+void hello_world_thread(void *p)
+{
+    printf("Hello world!");
+}
+
 __attribute__((weak)) int app_main(struct app_main_args *aargs)
 {
 
@@ -78,5 +83,8 @@ function we provide a list of default tests.
 #ifdef ENABLE_FS
 	create_thread("fs_test_thread", fs_test_thread, UKERNEL_FLAG, NULL);
 #endif 
+
+	void* goal_addr = (void*)0x400000;
+	create_thread_at("hello_world_thread", hello_world_thread, UKERNEL_FLAG, NULL, goal_addr); 
 	return 0;
 }

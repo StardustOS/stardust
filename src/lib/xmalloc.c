@@ -190,8 +190,12 @@ void xfree(const void *p)
 
 	if(((long)p & PAGE_MASK) != ((long)hdr & PAGE_MASK))
 	{
+#ifdef ENABLE_THREAD_CREATION_AT_DESIGNATED_ADDRESS
+		return; // xfree_at should be called manually for this
+#else
 		printk("Header should be on the same page, p=%lx, hdr=%lx\n", p, hdr);
 		*(int*)0=0;
+#endif
 	}
 
 	if(hdr->freelist.next || hdr->freelist.prev)

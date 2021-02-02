@@ -144,6 +144,42 @@ struct thread* arch_create_thread(char *name, void (*function)(void *), void *st
     return thread;
 }
 
+struct thread* arch_create_thread_at(char *name, void (*function)(void *), void *stack, unsigned long stack_size, void *data, const void *addr_at)
+{
+    struct thread *thread;
+    thread = malloc_at(addr_at, sizeof(struct thread));
+    if (thread == NULL) {
+    	return NULL;
+    }
+    if(stack != NULL)
+    {
+        thread->stack = (char *)stack;
+        thread->stack_allocated = 0;
+        thread->stack_size = stack_size;
+    }
+    else
+    {
+        thread->stack = (char *)alloc_pages(STACK_SIZE_PAGE_ORDER);
+        if (thread->stack == NULL) {
+        	xfree(thread);
+        	return NULL;
+        }
+        thread->stack_allocated = 1;
+        thread->stack_size = STACK_SIZE;
+    }
+    thread->specific = NULL;
+    thread->name = name;
+    thread->sp = (unsigned long)thread->stack + thread->stack_size;
+    stack_push(thread, (unsigned long) get_local_space());
+    stack_push(thread, (unsigned long) function);
+    stack_push(thread, (unsigned long) data);
+    if(function == idle_thread_fn)
+        thread->ip = (unsigned long) idle_thread_starter;
+    else
+        thread->ip = (unsigned long) thread_starter;
+    return thread;
+}
+
 struct thread initial_context;
 
 void init_initial_context(void)
