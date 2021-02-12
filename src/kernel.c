@@ -84,6 +84,7 @@ void start_kernel(start_info_t *si)
 			xen_features[r*32+k] = !!(fi.submap & 1<<k);
 	}
 
+	xenstore_init(si);
 	init_mm((char *)si->cmd_line);
 	init_time();
 	init_console();
@@ -113,7 +114,7 @@ void start_kernel(start_info_t *si)
 
 	aargs.cmd_line = (char *)si->cmd_line;
 	aargs.si_info = si;
-	printk("Stardust started.\n");
+	printk("Stardust has started, with id %d.\n", xenstore_read_domain_id());
 	startup(&aargs);
 	run_idle_thread();
 }
