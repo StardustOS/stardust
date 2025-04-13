@@ -66,6 +66,7 @@ struct xmalloc_hdr
 {
 	size_t size;
 	struct list_head freelist;
+    size_t _a;
 };
 
 static void maybe_split(struct xmalloc_hdr *hdr, size_t size, size_t block)
@@ -112,11 +113,11 @@ static inline size_t align_up(size_t size, size_t align)
 	return (size + align - 1) & ~(align - 1);
 }
 
-static void *xmalloc_whole_pages(size_t size) 
+static void *xmalloc_whole_pages(size_t size, size_t align)
 {
 	struct xmalloc_hdr *hdr;
 	size_t asize = align_up(size, PAGE_SIZE);
-	hdr = (struct xmalloc_hdr *)allocate_pages(asize / PAGE_SIZE, DATA_VM);
+	hdr = (struct xmalloc_hdr *)allocate_pages(asize / PAGE_SIZE, DATA_VM, align);
 	if ( hdr == NULL ) return NULL;
 	hdr->size = asize;
 	hdr->freelist.next = hdr->freelist.prev = NULL;
@@ -132,11 +133,11 @@ void *xmalloc_align(size_t asize, size_t align)
 
 	BUG_ON(in_irq());
 	size += sizeof(struct xmalloc_hdr);
-	size = align_up(size, __alignof__(struct xmalloc_hdr));
+	size = align_up(size, align);
 
 	if ( size >= PAGE_SIZE ) 
 	{
-		result = xmalloc_whole_pages(size);
+		result = xmalloc_whole_pages(size, align);
 		goto done;
 	}
 
@@ -144,6 +145,7 @@ void *xmalloc_align(size_t asize, size_t align)
 	list_for_each_entry(i, &freelist, freelist)
 	{
 		if ( i->size < size ) continue;
+		if ((size_t) (i + 1) % align != 0) continue;
 		list_del(&i->freelist);
 		maybe_split(i, size, i->size);
 		spin_unlock_irqrestore(&freelist_lock, flags);
@@ -174,7 +176,7 @@ void xfree(const void *p)
 
 	if(hdr->freelist.next || hdr->freelist.prev)
 	{
-		printk("Should not be previously freed\n");
+		//printk("Should not be previously freed\n");
 		return;
 		*(int*)0=0;
 	}

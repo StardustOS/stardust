@@ -72,7 +72,7 @@ long pfn_linear_alloc(pfn_alloc_env_t *env, unsigned long addr)
 
 long pfn_alloc_alloc(pfn_alloc_env_t *env, unsigned long addr) 
 {
-	unsigned long va = allocate_pages(1, PAGE_FRAME_VM);
+	unsigned long va = allocate_pages(1, PAGE_FRAME_VM, DEFAULT_ALIGN);
 	if (va == 0) return -1;
 	return pfn_to_mfn(virt_to_pfn(va));
 }

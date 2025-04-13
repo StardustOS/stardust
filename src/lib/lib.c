@@ -62,6 +62,7 @@ static char buf[25];
 static const char days[] = "Sun Mon Tue Wed Thu Fri Sat ";
 static const char months[] = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec ";
 static char *strtok_pos;
+static unsigned int next = 1;
 
 int * __errno_location(void)
 {
@@ -837,25 +838,18 @@ double strtod(const char* s, char** endptr)
 
 void srand(unsigned int i)
 {
-	unsigned int seed=1;
-    seed=i?i:23;
-}
-
-int rand_r(unsigned int* seed)
-{
-    int32_t X;
-    X = *seed;
-    X = A*(X%Q) - R * (int32_t) (X/Q);
-    if (X < 0)
-        X += M;
-    *seed = X;
-    return X;
+	next = i;
 }
 
 int rand(void)
 {
-	unsigned int seed=1;
-    return rand_r(&seed);
+    int32_t X;
+    X = next;
+    X = A*(X%Q) - R * (int32_t) (X/Q);
+    if (X < 0)
+        X += M;
+    next = X;
+    return X;
 }
 
 static void

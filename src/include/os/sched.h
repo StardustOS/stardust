@@ -349,7 +349,7 @@ void suspend_thread (struct thread * thread);
 
 #include <os/bug.h>
 
-#define STACK_SIZE_PAGE_ORDER    2
+#define STACK_SIZE_PAGE_ORDER    12
 #define STACK_SIZE               (PAGE_SIZE * (1 << STACK_SIZE_PAGE_ORDER))
 
 #define CLOBBER_LIST  \

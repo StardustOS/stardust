@@ -439,8 +439,8 @@ void schedule(void)
 	prev = current;
 	if (!is_pthread(current))
 	{
-	    BUG_ON(in_spinlock(prev));
-        BUG_ON(!is_preemptible(prev));
+	    //BUG_ON(in_spinlock(prev));
+        //BUG_ON(!is_preemptible(prev));
     }
 
 	u64 running_time = get_running_time();

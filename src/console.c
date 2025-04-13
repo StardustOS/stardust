@@ -62,6 +62,7 @@
 #include <os/lib.h>
 #include <os/types.h>
 #include <public/io/console.h>
+#include <stdio.h>
 
 extern int xencons_ring_init(void);
 
@@ -171,7 +172,7 @@ int xencons_ring_init(void)
 	return 0;
 }
 
-static void checked_print(char *data, int length) {
+static void checked_print(const char *data, int length) {
 	int printed = 0;
 
 	while (length > 0) 
@@ -182,15 +183,20 @@ static void checked_print(char *data, int length) {
 	}
 }
 
-static void console_print(char *data, int length)
+static void console_print(const char *data, int length)
 {
-	char *curr_char, saved_char;
+	const char *curr_char;
 	int part_len;
 
 	if (console_dying) 
 	{
 		return;
 	}
+
+	if (length == 0)
+    {
+	    return;
+    }
 
 	if(!console_initialised && (xencons_ring_avail() - length < strlen(init_overflow)))
 	{
@@ -206,15 +212,12 @@ static void console_print(char *data, int length)
 	{
 		if (*curr_char == '\n') 
 		{
-			saved_char = *(curr_char+1);
-			*curr_char = '\r';
-			*(curr_char+1) = '\n';
-			part_len = curr_char - data + 2;
-			checked_print(data, part_len);
-			*(curr_char+1) = saved_char;
-			*curr_char = '\n';
-			data = curr_char+1;
-			length -= part_len - 1;
+			part_len = (int)(curr_char - data);
+			if (part_len > 0)
+			    checked_print(data, part_len);
+			checked_print("\r\n", 2);
+			data = curr_char + 1;
+			length -= part_len + 1;
 		}
 	}
 
@@ -251,7 +254,7 @@ void print(int direct, const char *fmt, va_list args)
 	}
 }
 
-void printbytes(char *buf, int length)
+void printbytes(const char *buf, int length)
 {
 	unsigned long flags;
 	spin_lock_irqsave(&xencons_lock, flags);

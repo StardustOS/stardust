@@ -59,7 +59,7 @@
 void printk(const char *fmt, ...);
 void xprintk(const char *fmt, ...);
 void cprintk(int direct, const char *fmt, va_list args);
-void printbytes(char *buf, int length);
+void printbytes(const char *buf, int length);
 int readbytes(char *data, unsigned len);
 void print(int direct, const char *fmt, va_list args);
 void init_console(void);

@@ -255,7 +255,7 @@ void memory_hole_add(memory_hole_t *new_memory_hole)
 	list_add_tail(&new_memory_hole->memory_hole_next, list);
 }
 
-static unsigned long _allocate_pages(int n, int type)
+static unsigned long _allocate_pages(int n, int type, size_t align)
 {
 	unsigned long page;
 	unsigned long result = 0;
@@ -271,7 +271,7 @@ static unsigned long _allocate_pages(int n, int type)
 		page = is_bulk_alloc ? first_free_bulk_page : first_free_page;
 		while (page < end_page) 
 		{
-			if (!allocated_in_map(alloc_bitmap, page)) 
+			if (!allocated_in_map(alloc_bitmap, page))
 			{
 				int nn = n;
 				unsigned long npage = page + 1;
@@ -338,12 +338,12 @@ static unsigned long _allocate_pages(int n, int type)
 
 unsigned long alloc_pages(int order) 
 {
-	return _allocate_pages(1 << order, DATA_VM);
+	return _allocate_pages(1 << order, DATA_VM, DEFAULT_ALIGN);
 }
 
-unsigned long allocate_pages(int n, int type) 
+unsigned long allocate_pages(int n, int type, size_t align)
 {
-	return _allocate_pages(n, type);
+	return _allocate_pages(n, type, align);
 }
 
 void deallocate_pages(void *pointer, int n, int type) 
@@ -388,7 +388,7 @@ void resize_phys_to_machine_mapping_table(void)
 	if (max_end_alloc_page > end_alloc_page) 
 	{
 		unsigned long new_phys_to_machine_mapping_size = round_pgup(max_end_alloc_page * sizeof(long)) / PAGE_SIZE;
-		unsigned long *new_phys_to_machine_mapping = (unsigned long *) allocate_pages(new_phys_to_machine_mapping_size, DATA_VM);
+		unsigned long *new_phys_to_machine_mapping = (unsigned long *) allocate_pages(new_phys_to_machine_mapping_size, DATA_VM, DEFAULT_ALIGN);
 		if (new_phys_to_machine_mapping == 0) 
 		{
 			crash_with_message("can't resize phys_to_machine_mapping\n");

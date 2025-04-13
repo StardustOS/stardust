@@ -173,7 +173,7 @@ extern unsigned long mfn_zero;
 void init_mm(char *cmd_line);
 void arch_init_mm(unsigned long* start_pfn_p, unsigned long* max_pfn_p);
 unsigned long allocate_ondemand(unsigned long n, unsigned long alignment);
-unsigned long allocate_pages(int n, int type);
+unsigned long allocate_pages(int n, int type, size_t align);
 void deallocate_pages(void *pointer, int n, int type);
 unsigned long alloc_pages(int order);
 #define alloc_page() alloc_pages(0)

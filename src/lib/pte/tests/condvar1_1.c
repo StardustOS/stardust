@@ -120,6 +120,7 @@ int pthread_test_condvar1_1()
 		/* Traverse the list before every init of a CV. */
 		assert(pthread_timechange_handler_np(NULL) == (void *) 0);
 		assert(pthread_cond_init(&cv[i], NULL) == 0);
+		printf("cv: %p\n", cv[i]);
 	}
 
 	j = NUM_CV;
@@ -128,6 +129,7 @@ int pthread_test_condvar1_1()
 	do
 	{
 		i = rand() % NUM_CV;
+		printf("i: %d, %p\n", i, cv[i]);
 
 		if (cv[i] != NULL)
 		{
